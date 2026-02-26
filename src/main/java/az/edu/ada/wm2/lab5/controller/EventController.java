@@ -33,6 +33,8 @@ public class EventController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        throws RuntimeException {
+
     }
 
     // 2. LIST ALL - GET /api/events

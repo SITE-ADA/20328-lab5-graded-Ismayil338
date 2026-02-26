@@ -118,7 +118,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event updateEventPrice(UUID id, BigDecimal newPrice) {
-        return null;
+        Event existingEvent = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
+        existingEvent.setTicketPrice(newPrice);
+        return eventRepository.save(existingEvent);
     }
-    
 }
