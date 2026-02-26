@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -27,19 +30,27 @@ public class EventController {
     // 1. CREATE - POST /api/events
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .POST(null)
+                .uri(URI.create("http://localhost:8080/api/events"))
+                .build();
         try {
             Event createdEvent = eventService.createEvent(event);
             return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        throws RuntimeException {
-
     }
 
     // 2. LIST ALL - GET /api/events
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create("http://localhost:8080/api/events"))
+                .build();
         try {
             List<Event> events = eventService.getAllEvents();
             return new ResponseEntity<>(events, HttpStatus.OK);
@@ -51,6 +62,11 @@ public class EventController {
     // 3. GET ONE BY ID - GET /api/events/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable UUID id) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create("http://localhost:8080/api/events/" + id))
+                .build();
         try {
             Event event = eventService.getEventById(id);
             return new ResponseEntity<>(event, HttpStatus.OK);
@@ -77,6 +93,11 @@ public class EventController {
     // 5. FULL UPDATE (PUT) - PUT /api/events/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable UUID id, @RequestBody Event event) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(event.toString()))
+                .uri(URI.create("http://localhost:8080/api/events/" + id))
+                .build();
         try {
             Event updatedEvent = eventService.updateEvent(id, event);
             return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
@@ -90,6 +111,11 @@ public class EventController {
     // 6. PARTIAL UPDATE (PATCH) - PATCH /api/events/{id}
     @PatchMapping("/{id}")
     public ResponseEntity<Event> partialUpdateEvent(@PathVariable UUID id, @RequestBody Event partialEvent) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .PATCH(HttpRequest.BodyPublishers.ofString(partialEvent.toString()))
+                .uri(URI.create("http://localhost:8080/api/events/" + id))
+                .build();
         try {
             Event updatedEvent = eventService.partialUpdateEvent(id, partialEvent);
             return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
